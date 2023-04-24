@@ -3,6 +3,7 @@ from flask import abort, flash, redirect, render_template, url_for
 from . import app
 from .forms import URLMapForm
 from .models import URLMap
+from .generate_short_link import get_unique_short_id
 
 
 @app.route("/", methods=["GET", "POST"])
