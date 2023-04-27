@@ -1,6 +1,6 @@
 from urllib.parse import urljoin
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request
 
 from . import app, db
 from .forms import URLMapForm
@@ -21,7 +21,7 @@ def index_view():
             base_url = "http://localhost/"
 
         if custom_id and URLMap.query.filter_by(short=custom_id).first():
-            flash(f'Имя {custom_id} уже занято!')
+            flash(f"Имя {custom_id} уже занято!")
             return render_template("index.html", form=form)
         url_map = URLMap.query.filter_by(original=original_link).first()
         if not url_map:
