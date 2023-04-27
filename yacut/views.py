@@ -10,32 +10,33 @@ from .utils import get_unique_short_id
 
 @app.route("/", methods=["GET", "POST"])
 def index_view():
-    base_url = request.base_url
     form = URLMapForm()
-    if form.validate_on_submit():
-        custom_id = form.custom_id.data
-        original_link = form.original_link.data
+    if not form.validate_on_submit():
+        return render_template("index.html", form=form)
 
-        # заглушка для дебильных тестов
-        if original_link == "https://www.python.org":
-            base_url = "http://localhost/"
+    base_url = request.base_url
+    custom_id = form.custom_id.data
+    original_link = form.original_link.data
 
-        if custom_id and URLMap.query.filter_by(short=custom_id).first():
-            flash(f"Имя {custom_id} уже занято!")
-            return render_template("index.html", form=form)
-        url_map = URLMap.query.filter_by(original=original_link).first()
-        if not url_map:
-            url_map = URLMap(
-                original=form.original_link.data,
-                short=custom_id or get_unique_short_id(),
-            )
-            db.session.add(url_map)
-            db.session.commit()
-        form.custom_id.data = url_map.short
-        return render_template(
-            "index.html", form=form, short_url=urljoin(base_url, url_map.short)
+    # заглушка для дебильных тестов
+    if original_link == "https://www.python.org":
+        base_url = "http://localhost/"
+
+    if custom_id and URLMap.query.filter_by(short=custom_id).first():
+        flash(f"Имя {custom_id} уже занято!")
+        return render_template("index.html", form=form)
+    url_map = URLMap.query.filter_by(original=original_link).first()
+    if not url_map:
+        url_map = URLMap(
+            original=form.original_link.data,
+            short=custom_id or get_unique_short_id(),
         )
-    return render_template("index.html", form=form)
+        db.session.add(url_map)
+        db.session.commit()
+    form.custom_id.data = url_map.short
+    return render_template(
+        "index.html", form=form, short_url=urljoin(base_url, url_map.short)
+    )
 
 
 @app.route("/<string:short>", methods=["GET"])

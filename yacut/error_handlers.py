@@ -29,7 +29,7 @@ def page_not_found(error):
     return render_template('404.html'), HTTPStatus.NOT_FOUND
 
 
-def check_inique_short_url(custom_id):
+def check_unique_short_url(custom_id):
     if URLMap.query.filter_by(short=custom_id).first():
         return custom_id
     return None
