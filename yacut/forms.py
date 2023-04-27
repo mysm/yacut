@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Length, Optional, URL, Regexp
 
 from .utils import SHORT_LINK_REGEXP
 
+
 class URLMapForm(FlaskForm):
     original_link = URLField(
         "Ссылка",

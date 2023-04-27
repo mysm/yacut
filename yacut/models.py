@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 from datetime import datetime
 
 from yacut import db
@@ -9,15 +10,12 @@ class URLMap(db.Model):
     short = db.Column(db.String(256), unique=True, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    def to_dict(self):
+    def to_dict(self, base_url):
         return dict(
-            id=self.id,
-            original=self.original,
-            short=self.short,
-            timestamp=self.timestamp,
+            url=self.original,
+            short_link=urljoin(base_url, self.short),
         )
 
     def from_dict(self, data):
-        for field in ["original", "short"]:
-            if field in data:
-                setattr(self, field, data[field])
+        setattr(self, 'original', data['url'])
+        setattr(self, 'short', data['custom_id'])
